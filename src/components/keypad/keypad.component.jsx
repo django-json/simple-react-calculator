@@ -2,7 +2,7 @@ import React from 'react';
   
 const KeyPad = ({ onClick }) => (
 	<div className="keypad">
-		<button name="clear" type="button" onClick={onClick}>clear</button>
+		<button name="clear" type="button" onClick={onClick}>C</button>
 		<button 
 			name="*" 
 			type="button" 

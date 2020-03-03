@@ -21,7 +21,6 @@ class App extends Component {
 
   onClick(e) {
     const value = e.target.name;
-    console.log(value);
 
     if(value === "clear") {
       this.reset();
