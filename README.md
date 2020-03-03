@@ -1,6 +1,6 @@
 # Simple React Calculator
 
-This simple project can do the following:**
+This simple project can do the following:
 
 * Multiply
 * Divide
