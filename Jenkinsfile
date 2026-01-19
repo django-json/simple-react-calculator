@@ -25,8 +25,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // intentional error script to test slack notification
-                    sh "exit 1"
                     // Builds the image using the local Dockerfile
                     echo "Building version ${env.BUILD_NUMBER}..."
                     sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:latest ."
