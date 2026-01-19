@@ -1,6 +1,6 @@
 {
   "name": "simple-react-calculator",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "homepage": "https://django-json.github.io/simple-react-calculator",
   "dependencies": {
