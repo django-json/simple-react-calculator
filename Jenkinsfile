@@ -21,6 +21,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    # intentional error script to test slack notification
+                    sh "exit 1"
                     // Builds the image using the local Dockerfile
                     echo "Building version ${env.BUILD_NUMBER}..."
                     sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:latest ."
@@ -55,9 +57,18 @@ pipeline {
         }
         success {
             echo "Successfully built and pushed ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
+            slackSend(color: "good", message: "Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}")
         }
         failure {
             echo "Build failed. Check the logs for Docker errors."
+            slackSend(
+                color: "danger", 
+                message: """*BUILD FAILED* :red_circle:
+                    *Job:* ${env.JOB_NAME} #${env.BUILD_NUMBER}
+                    *Author:* ${env.GIT_AUTHOR}
+                    *Commit:* ${env.GIT_COMMIT_MSG}
+                    *Logs:* <${env.BUILD_URL}console|View Console Output>"""
+            )
         }
     }
 }

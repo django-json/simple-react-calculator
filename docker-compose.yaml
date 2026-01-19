@@ -1,6 +1,6 @@
 services:
   app:
-    image: simple-react-calculator:latest
+    image: djangodockerhub/simple-react-calculator:v1.0.0
     container_name: sr-calculator
     build:
       context: .
