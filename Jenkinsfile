@@ -49,9 +49,9 @@ pipeline {
         always {
             script {
                 echo "Cleaning images from Jenkins runner..."
-                sh "docker rmi ${DOCKER_USER}/${IMAGE_NAME}:latest" || true
-                sh "docker rmi ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}" || true
-                sh "docker rmi ${DOCKER_USER}/${IMAGE_NAME}:${env.SEMANTIC_VERSION}" || true
+                sh "docker rmi ${DOCKER_USER}/${IMAGE_NAME}:latest || true"
+                sh "docker rmi ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER} || true"
+                sh "docker rmi ${DOCKER_USER}/${IMAGE_NAME}:${env.SEMANTIC_VERSION} || true"
             }
         }
         success {
