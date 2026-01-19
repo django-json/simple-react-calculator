@@ -9,9 +9,13 @@ pipeline {
     }
 
     stages {
-        stage("Prepare Version") {
+        stage("Prepare Metadata") {
             steps {
                 script {
+                    // 1. Fetch Git info so the Slack message doesn't crash
+                    env.GIT_AUTHOR = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
+                    env.GIT_COMMIT_MSG = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+
                     // Pull version from package.json file and add the 'v' prefix
                     def pkgVersion = sh(script: "grep 'version' package.json | cut -d '\"' -f4", returnStdout: true).trim()
                     env.SEMANTIC_VERSION = "v${pkgVersion}"
@@ -21,7 +25,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    # intentional error script to test slack notification
+                    // intentional error script to test slack notification
                     sh "exit 1"
                     // Builds the image using the local Dockerfile
                     echo "Building version ${env.BUILD_NUMBER}..."
@@ -57,12 +61,12 @@ pipeline {
         }
         success {
             echo "Successfully built and pushed ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
-            slackSend(color: "good", message: "Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}")
+            slackSend(channel: "#jenkins", color: "good", message: "Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}")
         }
         failure {
             echo "Build failed. Check the logs for Docker errors."
             slackSend(
-                color: "danger", 
+                channel: "#jenkins", color: "danger", 
                 message: """*BUILD FAILED* :red_circle:
                     *Job:* ${env.JOB_NAME} #${env.BUILD_NUMBER}
                     *Author:* ${env.GIT_AUTHOR}
