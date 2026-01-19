@@ -6,7 +6,6 @@ pipeline {
         DOCKER_USER     = 'djangodockerhub'
         IMAGE_NAME      = 'simple-react-calculator'
         REGISTRY_CREDS  = 'ce5d70f3-6000-449e-a8b3-b9fd1d403257' // The ID of your Jenkins Credentials
-        DOCKER_REGISTRY = ''
     }
 
     stages {
@@ -35,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // Securely logs in and pushes the images
-                    docker.withRegistry("${DOCKER_REGISTRY}", "${REGISTRY_CREDS}") {
+                    docker.withRegistry('', "${REGISTRY_CREDS}") {
                         sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:latest"
                         sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
                         sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${env.SEMANTIC_VERSION}"
