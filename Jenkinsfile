@@ -25,11 +25,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Builds the image using the local Dockerfile
-                    echo "Building version ${env.BUILD_NUMBER}..."
-                    sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:latest ."
-                    sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:latest ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:latest ${DOCKER_USER}/${IMAGE_NAME}:${env.SEMANTIC_VERSION}"
+                    docker.withRegistry('', "${REGISTRY_CREDS}") {
+                        // Builds the image using the local Dockerfile
+                        echo "Building version ${env.BUILD_NUMBER}..."
+                        sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:latest ."
+                        sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:latest ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                        sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:latest ${DOCKER_USER}/${IMAGE_NAME}:${env.SEMANTIC_VERSION}"
+                    }
                 }
             }
         }
@@ -38,7 +40,7 @@ pipeline {
             steps {
                 script {
                     // Securely logs in and pushes the images
-                    docker.withRegistry('', 'dockerhub-auth') {
+                    docker.withRegistry('', "${REGISTRY_CREDS}") {
                         sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:latest"
                         sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
                         sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${env.SEMANTIC_VERSION}"
